@@ -410,12 +410,13 @@ void retAssert(int assert_condition, ret_param_t *param, int line_number,
   if(assert_condition) {
     return;
   } else {
+     char assert_buf[128];
+
 #ifndef RET_NO_PRINTF
     sprintf(assert_buf, "Assert at line %d of %s == %d", line_number, file_name,
             param->retval);
 #else
     char ascii_buf[12];
-    char assert_buf[128];
 
     assert_buf[0] = '\0';
     strcat(assert_buf, "Assert at line ");
