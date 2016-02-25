@@ -15,20 +15,27 @@ lists of tests to create a branch of the test tree. Test functions are either
 branches or leaves of the test tree and they must be constructed and declared
 according to a minimal set of RET rules.
 
-ret.h contains contains definitions and macros that must be configured to allow
-RET to function inside an embedded system.  The RET_..._SIZE preprocessor
-definitions must be set so as to stay within the available RAM resources of the
-target device.  The RET_SYS_TICK_FUNC() and RET_SEND_BUF() macros must refer to
-system calls that provide time data and communication transmission.
+ret.h contains definitions and macros that must be configured to allow RET to
+function inside an embedded system.  The RET_..._SIZE preprocessor definitions
+must be set so as to stay within the available RAM resources of the target
+device.  The RET_SYS_TICK_FUNC() and RET_SEND_BUF() macros must refer to system
+calls that provide time data and communication transmission.
 
-This test framework has been used with Segger RTT.  Segger's J-link probe can be
-used to both program and run the unit tests on the target device.  The RTT
+This test framework has been used with Segger RTT.  Segger's J-link probe can
+be used to both program and run the unit tests on the target device.  The RTT
 viewer and embedded RTT driver code is downloadable from:
 https://www.segger.com/jlink-software.html
+For my test and IDE I compiled the RTT_Syscalls_IAR.c and SEGGER_RTT.c files
+into my project.  The RTT viewer requires the RAM address on the embedded
+target where the RTT control block is placed.  This address obtained by
+manually inspecting the linker map output from the embedded project for the
+location of the _SEGGER_RTT object.  See the RTT_setup.png included in the
+example folder to see how this address is passed to JLinkRTTViewer.
 
 The following simple example code can be used on the target device to trigger
-a pre-compiled test via the JLinkRTTViewer software or custom software developed
-with the Segger SDK:
+a pre-compiled test via the JLinkRTTViewer software or custom software
+developed with the Segger SDK.  The output in JLinkRTTViewer is shown for the
+example test in RET_RTT.png.
 
 #ifdef UNIT_TEST
   SEGGER_RTT_Init();
