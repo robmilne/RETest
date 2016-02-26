@@ -27,7 +27,7 @@ viewer and embedded RTT driver code is downloadable from:
 https://www.segger.com/jlink-software.html
 For my test and IDE I compiled the RTT_Syscalls_IAR.c and SEGGER_RTT.c files
 into my project.  The RTT viewer requires the RAM address on the embedded
-target where the RTT control block is placed.  This address obtained by
+target where the RTT control block is placed.  This address is obtained by
 manually inspecting the linker map output from the embedded project for the
 location of the _SEGGER_RTT object.  See the RTT_setup.png included in the
 example folder to see how this address is passed to JLinkRTTViewer.

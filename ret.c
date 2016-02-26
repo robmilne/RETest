@@ -92,6 +92,7 @@ static ret_env_t   ret_env[RET_MAX_NEST_SIZE];
 static const char* RET_TAG_ERR_MSG = "Error: RET_MAX_TAG_STRING_SIZE exceeded";
 static const char* RET_LAYER_ERR_MSG = "Error: RET_MAX_NEST_SIZE exceeded";
 static const char* RET_PATH_ERR_MSG = "test path not found";
+static const char* RET_TEST_DONE_MSG = "DONE";
 static const char* RET_RETVAL_STR[4] = {"PASS", "FAIL", "TIMEOUT", "TAG_ID"};
 static const char  RET_DIGITS[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                      '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -309,6 +310,8 @@ static void retExit(ret_param_t* param, ret_val_t retval) {
       retInfoLine(RET_PATH_ERR_MSG, RET_PAUSE);
     } else {
       /* Output test report */
+      retPutLineFeed();
+      retPutString(RET_TEST_DONE_MSG);
       retSendBuffer();
     }
   }
@@ -410,7 +413,7 @@ void retAssert(int assert_condition, ret_param_t *param, int line_number,
   if(assert_condition) {
     return;
   } else {
-     char assert_buf[128];
+    char assert_buf[128];
 
 #ifndef RET_NO_PRINTF
     sprintf(assert_buf, "Assert at line %d of %s == %d", line_number, file_name,

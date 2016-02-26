@@ -37,13 +37,13 @@ void Test(void) {
 #if 1
   /* Run tests */
   param.mode = RET_MODE_EXE;
-  param.test_tag  = RET_ROOT_TAG; // Executes entire compiled test tree
-  //param.test_tag  = "Group1Test1"; // Execute Group1Test1 only
+  param.test_tag = RET_ROOT_TAG; // Executes entire compiled test tree
+  //param.test_tag = "Group1Test1"; // Execute Group1Test1 only
 #else
   /* Search test tree  */
   param.mode = RET_MODE_SEARCH;
-  param.test_tag  = RET_ROOT_TAG; // Display tags for all compiled tests
-  //param.test_tag  = "group_1_tests"; // Display test tags for group_1_tests
+  param.test_tag = RET_ROOT_TAG; // Display tags for all compiled tests
+  //param.test_tag = "group_1_tests"; // Display test tags for group_1_tests
 #endif
 
   /* Start test engine */
