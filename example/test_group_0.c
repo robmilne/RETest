@@ -1,9 +1,9 @@
 #include "test.h"
 
-#ifdef RET_GROUP_0_TESTS
+#if (1 == RET_COMMON_TESTS)
 
-static ret_val_t Group0Test0(ret_param_t* param);
-static ret_val_t Group0Test1(ret_param_t* param);
+static ret_retval_t Group0Test0(ret_param_t* param);
+static ret_retval_t Group0Test1(ret_param_t* param);
 
 static ret_test_t tests [] = {
   {Group0Test0, "Group0Test0"},
@@ -17,9 +17,9 @@ static ret_list_t test_list = {
 /**************************************************************************//**
  * @brief Example test group
  * @param ret_param_t* - pointer to user control structure
- * @return ret_val_t
+ * @return ret_retval_t
  */
-ret_val_t group_0_tests(ret_param_t* param) {
+ret_retval_t group_0_tests(ret_param_t* param) {
   /* Branch functions are not tests - they execute a list of tests */
   return(retExecuteList(param, &test_list));
 }
@@ -27,9 +27,9 @@ ret_val_t group_0_tests(ret_param_t* param) {
 /**************************************************************************//**
  * @brief Example test function
  * @param ret_param_t* - pointer to user control structure
- * @return ret_val_t
+ * @return ret_retval_t
  */
-static ret_val_t Group0Test0(ret_param_t* param) {
+static ret_retval_t Group0Test0(ret_param_t* param) {
   /* Every 'leaf' function must place the RET_MODE_SEARCH macro at the start
      of the function body */
   RET_MODE_SEARCH();
@@ -42,9 +42,9 @@ static ret_val_t Group0Test0(ret_param_t* param) {
 /**************************************************************************//**
  * @brief Example test function
  * @param ret_param_t* - pointer to user control structure
- * @return ret_val_t
+ * @return ret_retval_t
  */
-static ret_val_t Group0Test1(ret_param_t* param) {
+static ret_retval_t Group0Test1(ret_param_t* param) {
   RET_MODE_SEARCH();
 
   RET_ASSERT(1);

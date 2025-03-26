@@ -18,7 +18,7 @@
  * The following simple example code can be used on the target device to
  * trigger a pre-compiled test via the JLinkRTTViewer software:
  * @code
- * #ifdef UNIT_TEST
+ * #ifdef RET_TEST
  *   SEGGER_RTT_Init();
  *   while(1) {
  *     if(SEGGER_RTT_HasKey()) {
@@ -47,8 +47,8 @@ extern "C" {
 #include <string.h>
 #include <stdbool.h>
 /* Includes for RET_SYS_TICK_FUNC() and RET_SEND_BUF() macros */
-#include "stm32f1xx_hal.h"
-#include "SEGGER_RTT.h"
+#include "stm32h5xx_hal.h"
+#include "uart.h"
 
 
 /******************************************************************************
@@ -94,7 +94,7 @@ extern "C" {
  *
  * Macro to give RET access to a communication transmission function
  */
-#define RET_SEND_BUF(x) SEGGER_RTT_WriteString(0, (x));
+#define RET_SEND_BUF(x)  uartWriteString((x));
 
 /**
  * @brief Test function diagnostic macro
@@ -130,7 +130,7 @@ typedef enum {
   RET_FAIL,
   RET_ERR_TIMEOUT,
   RET_ERR_TAG  /**< Test tree is too deep for RET...SIZE definitions */
-} ret_val_t;
+} ret_retval_t;
 
 /**
  * @brief Test modes
@@ -154,7 +154,7 @@ typedef struct {
 /**
  * @brief RET test function prototype
  */
-typedef ret_val_t ret_func_t(ret_param_t* param);
+typedef ret_retval_t ret_func_t(ret_param_t* param);
 
 /**
  * @brief RET test structure
@@ -177,11 +177,13 @@ typedef struct {
 * P U B L I C    F U N C T I O N    P R O T O T Y P E S
 ******************************************************************************/
 void      retStart        (ret_param_t* param);
-ret_val_t retExecuteList  (ret_param_t* param, ret_list_t* list);
+ret_retval_t retExecuteList  (ret_param_t* param, ret_list_t* list);
 void      retAssert       (int assert_condition, ret_param_t* param,
                            int line_number, char *file_name);
-void      retInfoLineFmt  (char const* str);
-void      retInfoLine     (char const* str, bool pause);
+void retInfoLineFmt(const char* str);
+void retInfoLine(const char* str, bool pause);
+
+void retConvIntToDecAscii(char* dst_buf, int32_t val);
 
 #endif  /* __RET_H_ */
 

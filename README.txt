@@ -37,7 +37,7 @@ a pre-compiled test via the JLinkRTTViewer software or custom software
 developed with the Segger SDK.  The output in JLinkRTTViewer is shown for the
 example test in RET_RTT.png.
 
-#ifdef UNIT_TEST
+#ifdef RET_TEST
   SEGGER_RTT_Init();
   while(1) {
     if(SEGGER_RTT_HasKey()) {

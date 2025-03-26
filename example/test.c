@@ -5,7 +5,7 @@
 #include "test.h"
 #include "ret.h"
 
-#ifdef UNIT_TEST
+#ifdef RET_TEST
 
 /******************************************************************************
 * S T A T I C    D A T A
@@ -53,11 +53,11 @@ void Test(void) {
 /**************************************************************************//**
  * @brief RET test function that runs each test branch
  * @param ret_param_t* - pointer to user control structure
- * @return ret_val_t
+ * @return ret_retval_t
  */
-ret_val_t RunTrunk(ret_param_t* param) {
+ret_retval_t RunTrunk(ret_param_t* param) {
   /* Branch functions are not tests - they execute a list of tests */
   return(retExecuteList(param, &trunk_list));
 }
 
-#endif // #ifdef UNIT_TEST
+#endif // #ifdef RET_TEST

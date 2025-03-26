@@ -19,7 +19,7 @@
  * The ...SIZE preprocessor definitions in ret.h must be set appropriately for
  * the RAM memory resources of the target device.
  */
-#ifdef UNIT_TEST
+#ifdef RET_TEST
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +43,7 @@ typedef struct {
 /**
  * @brief Test function that executes the test branches (feel free to rename)
  */
-extern ret_val_t RunTrunk(ret_param_t *param);
+extern ret_retval_t RunTrunk(ret_param_t *param);
 
 
 /******************************************************************************
@@ -103,23 +103,22 @@ static const char  RET_DIGITS[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
 /******************************************************************************
 * S T A T I C    F U N C T I O N    P R O T O T Y P E S
 ******************************************************************************/
-static ret_val_t  retEnter            (ret_param_t* param, ret_test_t* test);
-static void       retExit             (ret_param_t* param, ret_val_t retval);
+static ret_retval_t  retEnter            (ret_param_t* param, ret_test_t* test);
+static void       retExit             (ret_param_t* param, ret_retval_t retval);
 static bool       retFindTagToken     (ret_param_t *param);
-static ret_val_t  retAddTag           (char const* const tag);
+static ret_retval_t retAddTag(const char* const tag);
 static void       retRemoveTag        (uint32_t nest_val);
-static void       retTestLineFormat   (ret_val_t retval, uint32_t elapsed_time);
+static void       retTestLineFormat   (ret_retval_t retval, uint32_t elapsed_time);
 
 static void       retDecimalDigits    (uint32_t value, uint32_t width);
-static void       retConvIntToDecAscii(char* buf, int32_t val);
 
-static void       retPutChar          (char const printable_ascii);
-static void       retPutString        (char const* out_string);
+static void retPutChar(const char printable_ascii);
+static void retPutString(const char* out_string);
 static void       retPutLineFeed      (void);
 static void       retPutCommaSeparator(void);
 static void       retSendBuffer       (void);
-static void       retSearchLine       (char const* tag);
-static void       retFormatLine    (char msg_type, char const* str, bool pause);
+static void retSearchLine(const char* tag);
+static void retFormatLine(char msg_type, const char* str, bool pause);
 
 
 /**************************************************************************//**
@@ -146,13 +145,13 @@ void retStart(ret_param_t* param) {
  * @brief Execute a test list
  * @param ret_param_t* - pointer to user control structure
  * @param ret_list_t* - pointer to test list structure (size + ret_test_t ptr)
- * @return ret_val_t - see ret.h
+ * @return ret_retval_t - see ret.h
  */
-ret_val_t retExecuteList(ret_param_t* param, ret_list_t* list) {
+ret_retval_t retExecuteList(ret_param_t* param, ret_list_t* list) {
   int         longjmp_val;
   ret_test_t* test;
   ret_test_t* last = list->first + list->size;
-  ret_val_t   retval, err_flag;
+  ret_retval_t   retval, err_flag;
   bool        save_pause;
 
   /* Prevent nesting beyond end of environment buffer (recursion limit) */
@@ -211,9 +210,9 @@ ret_val_t retExecuteList(ret_param_t* param, ret_list_t* list) {
  *
  * @param ret_param_t* - pointer to user control structure
  * @param ret_test_t* - pointer to test structure (func + tag)
- * @return ret_val_t - see ret.h
+ * @return ret_retval_t - see ret.h
  */
-static ret_val_t retEnter(ret_param_t* param, ret_test_t* test) {
+static ret_retval_t retEnter(ret_param_t* param, ret_test_t* test) {
   /* Append tag of current function to end of the global tag path
    * Increment ret nesting value
    */
@@ -254,10 +253,10 @@ static ret_val_t retEnter(ret_param_t* param, ret_test_t* test) {
  * the root level calls this function the test report is sent to the host.
  *
  * @param ret_param_t* - pointer to user control structure
- * @param ret_val_t - setjmp return value or tag string error from retEnter
+ * @param ret_retval_t - setjmp return value or tag string error from retEnter
  * @return none
  */
-static void retExit(ret_param_t* param, ret_val_t retval) {
+static void retExit(ret_param_t* param, ret_retval_t retval) {
   uint32_t elapsed_time;
 
   if(retval == RET_ERR_TAG) {
@@ -326,7 +325,7 @@ static void retExit(ret_param_t* param, ret_val_t retval) {
  * the root level calls this function the result buffer is sent to the host.
  *
  * @param ret_param_t* - pointer to user control structure
- * @return ret_val_t - see ret.h
+ * @return ret_retval_t - see ret.h
  */
 static bool retFindTagToken(ret_param_t *param) {
   char* tag_pos;
@@ -353,7 +352,8 @@ static bool retFindTagToken(ret_param_t *param) {
  * @param char* - tag
  * @return none
  */
-static ret_val_t retAddTag(char const* const tag) {
+static ret_retval_t retAddTag(const char* const tag)
+{
   char* save_previous;
   static char tag_separator[] = {RET_TOKEN_DELIMITER, '\0'};
 
@@ -446,7 +446,8 @@ void retAssert(int assert_condition, ret_param_t *param, int line_number,
  * @param char* - message to append to output report buffer
  * @return none
  */
-void retInfoLineFmt(char const* str) {
+void retInfoLineFmt(const char* str)
+{
   retInfoLine(str, RET_NO_PAUSE);
 }
 
@@ -457,7 +458,8 @@ void retInfoLineFmt(char const* str) {
  * @param bool - 1|0 : send msg immediately|send msg at completion of test
  * @return none
  */
-void retInfoLine(char const* str, bool pause) {
+void retInfoLine(const char* str, bool pause)
+{
   retFormatLine('I', str, pause);
 }
 
@@ -467,7 +469,8 @@ void retInfoLine(char const* str, bool pause) {
  * @param char* - message to append to output report buffer
  * @return none
  */
-static void retSearchLine(char const* str) {
+static void retSearchLine(const char* str)
+{
   retFormatLine('S', str, RET_NO_PAUSE);
 }
 
@@ -479,7 +482,8 @@ static void retSearchLine(char const* str) {
  * @param bool - 1|0 : send msg immediately|send msg at completion of test
  * @return none
  */
-static void retFormatLine(char msg_type, char const* str, bool pause) {
+static void retFormatLine(char msg_type, const char* str, bool pause)
+{
   bool save_pause;
 
   save_pause = ret_buf.is_pause;
@@ -503,11 +507,11 @@ static void retFormatLine(char msg_type, char const* str, bool pause) {
 
 /**************************************************************************//**
  * @brief Send test result to output buffer
- * @param ret_val_t - return value of test
+ * @param ret_retval_t - return value of test
  * @param uint32_t - elapsed time for test execution
  * @return none
  */
-static void retTestLineFormat(ret_val_t retval, uint32_t elapsed_time) {
+static void retTestLineFormat(ret_retval_t retval, uint32_t elapsed_time) {
   retPutChar('T');
   retPutCommaSeparator();
   retDecimalDigits(ret.next_line_number++ , 4) ;
@@ -537,7 +541,7 @@ static void str_rev(char *start, char *end) {
  * @param int32_t - binary signed input value
  * @return none
  */
-static void retConvIntToDecAscii(char* dst_buf, int32_t val) {
+void retConvIntToDecAscii(char* dst_buf, int32_t val) {
   char  *tmp_str = dst_buf;
   bool    neg_flag = false;
 
@@ -574,7 +578,7 @@ static void retConvIntToDecAscii(char* dst_buf, int32_t val) {
  * @return none
  */
 static void retDecimalDigits(uint32_t value, uint32_t width) {
-  static char const blanks[] = "          ";
+    static const char blanks[] = "          ";
   static char work[sizeof blanks];
   uint32_t next;
   char* ch_ptr;
@@ -604,7 +608,8 @@ static void retDecimalDigits(uint32_t value, uint32_t width) {
  * @param char - character
  * @return none
  */
-static void retPutChar(char const c) {
+static void retPutChar(const char c)
+{
   if(ret_buf.next_in < ret_buf.buf + RET_REPORT_BUF_SIZE) {
     *ret_buf.next_in++ = c;
     if('\n' == c && ret_buf.is_pause)
@@ -618,7 +623,8 @@ static void retPutChar(char const c) {
  * @param char* - string
  * @return none
  */
-static void retPutString(char const* str) {
+static void retPutString(const char* str)
+{
   for(char c = *str++; c; c = *str++)
     retPutChar(c);
 }
@@ -630,7 +636,7 @@ static void retPutString(char const* str) {
  * @return none
  */
 static void retPutLineFeed(void) {
-#if 0
+#if 1
   retPutChar ('\r');
 #endif
   retPutChar('\n');
@@ -665,4 +671,4 @@ static void retSendBuffer(void) {
 }
 #endif
 
-#endif /* #ifdef UNIT_TEST */
+#endif /* #ifdef RET_TEST */
